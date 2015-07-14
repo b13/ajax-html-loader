@@ -1,0 +1,25 @@
+{
+  "name": "ajax-module",
+  "description": "An ajax module that handels asynchronously loading, adding and replacing of html content.",
+  "keywords": ["ajax", "load", "asynchronous", "replace", "append"],
+  "homepage": "https://github.com/b13/breakpointlistener",
+  "main": "dist/ajax-module.min.js",
+  "version": "0.0.1",
+  "license": "MIT",
+  "authors": [
+    {"name": "Benjamin Gröner", "email": "groener@b13.de"}
+  ],
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@source.stgt.b13.de:7999/am/ajax-module.git"
+  },
+  "dependencies": {
+  },
+  "ignore": [
+    ".gitignore",
+    "Gruntfile.js"],
+  "devDependencies": {
+    "requirejs": "~2.1.19"
+  }
+}
+
