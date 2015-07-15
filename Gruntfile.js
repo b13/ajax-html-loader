@@ -28,7 +28,7 @@ module.exports = function (grunt) {
 			test: {
 				files: [
 					{expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.js'], dest: 'test/dist/js/contrib/'},
-					{expand: true, flatten: true, src: ['bower_components/jquery/require.js'], dest: 'test/dist/js/contrib/'},
+					{expand: true, flatten: true, src: ['bower_components/requirejs/require.js'], dest: 'test/dist/js/contrib/'},
 					{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'test/dist/js/contrib/'}
 				]
 			}
