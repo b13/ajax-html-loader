@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		"ajax-module": "contrib/breakpointlistener",
+		"ajax-html-loader": "contrib/breakpointlistener",
 		requirejs: "contrib/require",
 		testApp: "testApp"
 	},

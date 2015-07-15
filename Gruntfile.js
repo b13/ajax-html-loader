@@ -23,12 +23,13 @@ module.exports = function (grunt) {
 
 		copy: {
 			release: {
-				files: [{expand: true, flatten: true, src: ['src/ajax-module.js'], dest: 'dist/'}]
+				files: [{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'dist/'}]
 			},
 			test: {
 				files: [
-					{expand: true, flatten: true, src: ['bower_components/requirejs/require.js'], dest: 'test/dist/js/contrib/'},
-					{expand: true, flatten: true, src: ['src/ajax-module.js'], dest: 'test/dist/js/contrib/'}
+					{expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.js'], dest: 'test/dist/js/contrib/'},
+					{expand: true, flatten: true, src: ['bower_components/jquery/require.js'], dest: 'test/dist/js/contrib/'},
+					{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'test/dist/js/contrib/'}
 				]
 			}
 		},
@@ -43,7 +44,7 @@ module.exports = function (grunt) {
 		less: {
 			test: {
 				options: {
-					compress      : false,
+					compress    : false,
 					yuicompress : false,
 					cleancss    : false,
 					optimization: null
@@ -84,8 +85,8 @@ module.exports = function (grunt) {
 				banner: '<%= banner %>'
 			},
 			dist   : {
-				src : 'dist/ajax-module.js',
-				dest: 'dist/ajax-module.min.js'
+				src : 'dist/ajax-html-loader.js',
+				dest: 'dist/ajax-html-loader.min.js'
 			}
 		},
 

@@ -1,5 +1,5 @@
 {
-  "name": "ajax-module",
+  "name": "ajax-html-loader",
   "description": "An ajax module that handels asynchronously loading, adding and replacing of html content.",
   "version": "0.0.1",
   "engines": {
@@ -18,7 +18,7 @@
     "mail": "info@b13.de"
   },
   "license": "MIT",
-  "repository": "ssh://git@source.stgt.b13.de:7999/am/ajax-module.git",
+  "repository": "ssh://git@source.stgt.b13.de:7999/am/ajax-html-loader.git",
   "devDependencies": {
     "express": "^4.11.2",
     "grunt": "~0.4.5",
