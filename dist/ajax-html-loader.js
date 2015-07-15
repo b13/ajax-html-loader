@@ -30,12 +30,10 @@ define('ajax-html-loader', [
 			loaderTargetSelector : 'body'
 		},
 
-		test: function(){},
-
 		initialize: function(el, opts){
 			this.el = el;
 			this.opts = {};
-			console.log("INIT")
+			console.log("INIT ")
 		},
 
 		getOptions: function(){
