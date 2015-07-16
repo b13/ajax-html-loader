@@ -11,7 +11,6 @@ require.config({
 
 var B = B || {};
 
-
 require([
 	'jquery',
 	'ajax-html-loader'
