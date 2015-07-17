@@ -52,7 +52,7 @@ define('ajax-html-loader', [
 			sourceSelector       : 'al_source',
 			targetSelector       : 'al_target',
 			httpMethod           : 'GET',
-			httpParams           : null, 			//It is possible to set a function here
+			httpParams           : "", 				//It is possible to set a function here
 			addLoaderClass       : true,
 			loaderClass          : 'al_loader',
 			loaderTargetSelector : 'body'
@@ -64,8 +64,6 @@ define('ajax-html-loader', [
 		 * @param opts
 		 */
 		initialize: function(el, opts){
-			console.log("INIT");
-			console.log(el);
 			this.el = el;
 			this.opts = mergeObjects(this.defaultOpts, this._getOptionsFromDataAttributes(), opts);
 
@@ -91,21 +89,30 @@ define('ajax-html-loader', [
 			}
 		},
 
-
 		_handleClickEvent: function(evt){
-			var opts = this.getOptions();
+			var ahl = this,
+				opts = this.getOptions();
 
 			evt.preventDefault();
 
 			this.loadAjaxContent(
 				opts,
-				function(){
-					alert("SUCCESS");
-				},
-				function(){
-					alert("ERROR");
+				function(responseText, xhr){
+					ahl._handleContentLoadSuccess.call(ahl, responseText, xhr)
 				}
 			);
+		},
+
+		_handleContentLoadSuccess: function(responseHTML, xhr){
+			var actionType = this.getActionType(),
+				extractedContent = this._extractContentFromResponseHTML(responseHTML);
+
+			if(actionType === 'append'){
+				this.appendContent(extractedContent);
+			}
+			else if (actionType === 'replace') {
+				this.replaceContent(extractedContent);
+			}
 		},
 
 		_createXHR: function(){
@@ -125,6 +132,15 @@ define('ajax-html-loader', [
 			}
 
 			return xhr;
+		},
+
+		_extractContentFromResponseHTML: function(responseHTML){
+			var dummyEl = document.createElement( 'html'),
+				sourceSelector = this.getSourceSelector();
+
+			dummyEl.innerHTML = responseHTML;
+
+			return dummyEl.querySelector(sourceSelector);
 		},
 
 		/**
@@ -151,6 +167,52 @@ define('ajax-html-loader', [
 			return this.el.getAttribute('href');
 		},
 
+		getActionType: function(preventEvaluation){
+			return this.getOption('actionType', preventEvaluation);
+		},
+		getSourceSelector: function(preventEvaluation){
+			return this.getOption('sourceSelector', preventEvaluation);
+		},
+		getTargetSelector: function(preventEvaluation){
+			return this.getOption('targetSelector', preventEvaluation);
+		},
+		getHttpMethod: function(preventEvaluation){
+			return this.getOption('httpMethod', preventEvaluation);
+		},
+		getHttpParams: function(preventEvaluation){
+			return this.getOption('httpParams', preventEvaluation);
+		},
+		doAddLoaderClass: function(preventEvaluation){
+			return this.getOption('addLoaderClass', preventEvaluation);
+		},
+		getLoaderClass: function(preventEvaluation){
+			return this.getOption('loaderClass', preventEvaluation);
+		},
+		getLoaderTargetSelector: function(preventEvaluation){
+			return this.getOption('loaderTargetSelector', preventEvaluation);
+		},
+
+		getTargetElements: function(){
+			var targetSelector = this.getTargetSelector();
+			return document.querySelectorAll(targetSelector);
+		},
+
+		getRequestUrl: function(){
+			var httpMethod = this.getHttpMethod(),
+				requestUrl = this.getAjaxSource(),
+				httpParams = this.getHttpParams();
+
+			if(httpMethod == 'GET' && httpParams && httpParams.length){
+				if(requestUrl.indexOf('?') >= 0) {
+					requestUrl += "&";
+				} else {
+					requestUrl += "?";
+				}
+				requestUrl += httpParams;
+			}
+			return requestUrl;
+		},
+
 		/**
 		 * Copies the opts object and evaluates the functions that are given as opts
 		 *
@@ -160,17 +222,11 @@ define('ajax-html-loader', [
 			return mergeObjects(this.opts);
 		},
 
-		evalOptions: function(options){
-			var evaluatedOpts = {};
+		getOption: function(optionName, preventEvaluation){
+			var rawOption = this.opts[optionName];
 
-			for(var optName in options){
-				var opt = this.opts[optName];
-
-				//If opt is a function evaluate it otherwhise copy it to the new opts object.
-				evaluatedOpts[optName] = typeof opt === 'function' ? opt.call(this) : opt;
-			}
-
-			return evaluatedOpts;
+			if(preventEvaluation || typeof rawOption !== 'function') return rawOption;
+			return rawOption.call(this);
 		},
 
 		/**
@@ -182,24 +238,53 @@ define('ajax-html-loader', [
 			this.opts = mergeObjects(this.opts, opts);
 		},
 
-
 		loadAjaxContent: function(opts, onSuccess, onError){
 			var ahl = this,
-				evaluatedOpts = this.evalOptions(opts),
-				xhr = this._createXHR();
+				xhr = this._createXHR(),
+				httpMethod = this.getHttpMethod(),
+				httpParams = this.getHttpParams(),
+				requestURL = this.getRequestUrl();
 
 			xhr.onreadystatechange = function(){
 				if(xhr.readyState == 4){
 					if(xhr.status == 200){
 						if(typeof onSuccess === 'function') onSuccess.call(ahl, xhr.responseText, xhr);
 					} else {
-						if(typeof onError === 'function') onError.call(ahl, xhr.responseText, xhr);
+						if(typeof onError === 'function')   onError.call(ahl, xhr.responseText, xhr);
 					}
 				}
 			};
 
-			xhr.open(evaluatedOpts.httpMethod, this.getAjaxSource(), true);
-			xhr.send();
+			xhr.open(httpMethod, requestURL, true);
+			//Send the proper header information along with the request
+			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			if(httpMethod == 'GET'){
+				xhr.send();
+			} else {
+				xhr.send(httpParams);
+			}
+		},
+
+		appendContent: function(contentToAppend){
+			var targetSelector = this.getTargetSelector(),
+				targetContainer = document.querySelector(targetSelector);
+
+			while (contentToAppend.firstChild) {
+				targetContainer.appendChild(contentToAppend.firstChild);
+			}
+		},
+
+		replaceContent: function(replacementContent){
+			var targetSelector = this.getTargetSelector(),
+				targetContainer = document.querySelector(targetSelector);
+
+			while (targetContainer.firstChild) {
+				targetContainer.removeChild(targetContainer.firstChild);
+			}
+
+			while (replacementContent.firstChild) {
+				targetContainer.appendChild(replacementContent.firstChild);
+			}
 		}
 	};
 
