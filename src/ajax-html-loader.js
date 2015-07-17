@@ -18,6 +18,13 @@ define('ajax-html-loader', [
 		return newObj;
 	}
 
+	/**
+	 * Utility class to check if an element contains a given class
+	 *
+	 * @param element
+	 * @param cls
+	 * @returns {boolean}
+	 */
 	function hasClass(element, cls) {
 		return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 	}
@@ -54,18 +61,42 @@ define('ajax-html-loader', [
 		 * Default options that will be used if nothing else is defined.
 		 */
 		defaultOpts: {
-			actionType           : 'append', 		//The other possible action is replace
+			// Defines if loaded content should replace the target content or should be appended to target content
+			// Valid types are 'append' or 'replace'
+			actionType           : 'append',
+
+			// URL of the source that will be loaded
 			ajaxSource           : "",
+
+			// Selector of the element that contains the content that will be appended or will replace the target content.
 			sourceSelector       : 'al_source',
+
+			// Selector of the element that contains the content to which the new content will be appended, or the
+			// content that will be replaced.
 			targetSelector       : 'al_target',
+
+			// HTTP method that will be used in the ajax request. POST is tested. Others are not testet, yet.
 			httpMethod           : 'GET',
-			httpParams           : "", 				//It is possible to set a function here
+
+			// HTTP params that will be either send as GET parameters or in the request body, depending on the httpMethod.
+			httpParams           : "",
+
+			// Define if a loader css class should be added while loading
 			showLoader           : false,
+
+			// Class that will be added if showLoader is true
 			loaderClass          : 'al_loader',
+
+			// Element selector to which the loaderClass will be added if showLoader is true.
 			loaderTargetSelector : 'body',
+
+			// Group can be defined if multiple links should work as if they would have only one loader.
 			group                : ''
 		},
 
+		/**
+		 * Private prototype attribute, to manage group states.
+		 */
 		_groupStates: {},
 
 		/**
@@ -91,6 +122,7 @@ define('ajax-html-loader', [
 				ahl._handleClickEvent.apply(ahl, arguments);
 			};
 
+			//Bind click event listener to the link element
 			if(this.el.addEventListener){ // W3C DOM
 				this.el.addEventListener('click', _boundHandleClickEvent);
 			}
@@ -99,6 +131,12 @@ define('ajax-html-loader', [
 			}
 		},
 
+		/**
+		 * Click event handler. Triggers the content loading process.
+		 *
+		 * @param evt
+		 * @private
+		 */
 		_handleClickEvent: function(evt){
 			var ahl = this,
 				opts = this.getOptions();
@@ -107,12 +145,20 @@ define('ajax-html-loader', [
 
 			this.loadAjaxContent(
 				opts,
+				// Will be called if the content loading was successful
 				function(responseText, xhr){
 					ahl._handleContentLoadSuccess.call(ahl, responseText, xhr)
 				}
 			);
 		},
 
+		/**
+		 * Handler that is provided as callback if content loading was successful.
+		 *
+		 * @param responseHTML
+		 * @param xhr
+		 * @private
+		 */
 		_handleContentLoadSuccess: function(responseHTML, xhr){
 			var actionType = this.getActionType(),
 				extractedContent = this._extractContentFromResponseHTML(responseHTML);
@@ -125,9 +171,15 @@ define('ajax-html-loader', [
 			}
 		},
 
+		/**
+		 * Utility function to create an XHR
+		 *
+		 * @returns {*}
+		 * @private
+		 */
 		_createXHR: function(){
 			var xhr;
-			if (window.ActiveXObject){
+			if (window.ActiveXObject){ // IF IE
 				try
 				{
 					xhr = new ActiveXObject("Microsoft.XMLHTTP");
@@ -137,13 +189,20 @@ define('ajax-html-loader', [
 					xhr = null;
 				}
 			}
-			else{
+			else{ // Other browsers
 				xhr = new XMLHttpRequest();
 			}
 
 			return xhr;
 		},
 
+		/**
+		 * Extractor function that peals out the required content out of the loaded content.
+		 *
+		 * @param responseHTML
+		 * @returns {Element}
+		 * @private
+		 */
 		_extractContentFromResponseHTML: function(responseHTML){
 			var dummyEl = document.createElement( 'html'),
 				sourceSelector = this.getSourceSelector();
