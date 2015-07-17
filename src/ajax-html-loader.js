@@ -35,9 +35,10 @@ define('ajax-html-loader', [
 		 */
 		attributeOptionsMapping: {
 			actionType           : 'data-alaction',
-			sourceSelector       : 'data-alsource',
-			targetSelector       : 'data-altarget',
-			httpMethod           : 'data-almthod',
+			ajaxSource           : 'data-alajaxsource',
+			sourceSelector       : 'data-alsourceselector',
+			targetSelector       : 'data-altargetselector',
+			httpMethod           : 'data-almethod',
 			httpParams           : 'data-alparams',
 			addLoader            : 'data-alloader',
 			loaderClass          : 'data-alloaderclass',
@@ -49,6 +50,7 @@ define('ajax-html-loader', [
 		 */
 		defaultOpts: {
 			actionType           : 'append', 		//The other possible action is replace
+			ajaxSource           : "",
 			sourceSelector       : 'al_source',
 			targetSelector       : 'al_target',
 			httpMethod           : 'GET',
@@ -269,8 +271,10 @@ define('ajax-html-loader', [
 			var targetSelector = this.getTargetSelector(),
 				targetContainer = document.querySelector(targetSelector);
 
-			while (contentToAppend.firstChild) {
-				targetContainer.appendChild(contentToAppend.firstChild);
+			if(contentToAppend){
+				while (contentToAppend.firstChild) {
+					targetContainer.appendChild(contentToAppend.firstChild);
+				}
 			}
 		},
 
@@ -278,12 +282,14 @@ define('ajax-html-loader', [
 			var targetSelector = this.getTargetSelector(),
 				targetContainer = document.querySelector(targetSelector);
 
-			while (targetContainer.firstChild) {
-				targetContainer.removeChild(targetContainer.firstChild);
-			}
+			if(replacementContent){
+				while (targetContainer.firstChild) {
+					targetContainer.removeChild(targetContainer.firstChild);
+				}
 
-			while (replacementContent.firstChild) {
-				targetContainer.appendChild(replacementContent.firstChild);
+				while (replacementContent.firstChild) {
+					targetContainer.appendChild(replacementContent.firstChild);
+				}
 			}
 		}
 	};
