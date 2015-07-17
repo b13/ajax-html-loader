@@ -260,6 +260,15 @@ define('ajax-html-loader', [
 			xhr.open(httpMethod, requestURL, true);
 			//Send the proper header information along with the request
 			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			//if(httpMethod != 'GET'){
+			//	console.log("NO GET METHOD");
+			//	xhr.setRequestHeader("Content-length", httpParams.length);
+			//	xhr.setRequestHeader("Connection", "close");
+			//}
+
+			console.log("LOAD AJAX CONTENT");
+			console.log(httpParams);
+
 			if(httpMethod == 'GET'){
 				xhr.send();
 			} else {

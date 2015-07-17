@@ -16,8 +16,7 @@
 	<h1>Ajax Module Testing Page</h1>
 </header>
 <main class="container">
-
-	<div class="bJS_ahl-basicReplacementTest">
+	<section>
 		<h2>Basic Replacement Test</h2>
 		<div id="bJS_ahl-basicReplacementTest-target">
 			<p>Lorem ipsum text 1.</p>
@@ -27,7 +26,79 @@
 			</p>
 		</div>
 		<a href="/ajax-source.html" class="btn btn-default mJS_ajaxLoader" data-alaction="replace" data-alsourceselector="#bJS_ahl-basicReplacementTest-source" data-altargetselector="#bJS_ahl-basicReplacementTest-target">Replace Content</a>
-	</div>
+	</section>
+	<section>
+		<h2>Basic Append Test</h2>
+		<ul id="bJS_ahl-basicAppendTest-target">
+			<li>Original list element 1</li>
+			<li>Original list element 2</li>
+		</ul>
+		<a href="/ajax-source.html" class="btn btn-default mJS_ajaxLoader" data-alaction="append" data-alsourceselector="#bJS_ahl-basicAppendTest-source" data-altargetselector="#bJS_ahl-basicAppendTest-target">Load More</a>
+	</section>
+	<section>
+		<h2>Pagination Test</h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Email</th>
+				</tr>
+			</thead>
+			<tbody id="bJS_ahl-paginationTest-target">
+				<tr>
+					<td>Robbie</td>
+					<td>Hightower</td>
+					<td>r.hightower@gmail.com</td>
+				</tr>
+				<tr>
+					<td>Mickey</td>
+					<td>Fischer</td>
+					<td>m.fischer@gmail.com</td>
+				</tr>
+				<tr>
+					<td>Beverly</td>
+					<td>Chambers</td>
+					<td>b.chambers@gmail.com</td>
+				</tr>
+				<tr>
+					<td>Leslie</td>
+					<td>Arechavaleta</td>
+					<td>l.arechavaleta@gmail.com</td>
+				</tr>
+				<tr>
+					<td>Franny</td>
+					<td>Shaw</td>
+					<td>f.shaw@gmail.com</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="pull-right pagination">
+			<ul class="pagination">
+				<li class="page-first">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=1" data-alloader="true" data-alsourceselector="#bJS_ahl-paginationTest-source" data-altargetselector="#bJS_ahl-paginationTest-target">&lt;&lt;</a>
+				</li>
+				<li class="page-number">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=1" data-alloader="true" data-alsourceselector="#bJS_ahl-paginationTest-source" data-altargetselector="#bJS_ahl-paginationTest-target">1</a>
+				</li>
+				<li class="page-number">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=2" data-alloader="true" data-alsourceselector="#bJS_ahl-paginationTest-source" data-altargetselector="#bJS_ahl-paginationTest-target">2</a>
+				</li>
+				<li class="page-number">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=3" data-alloader="true" data-alsourceselector="#bJS_ahl-paginationTest-source" data-altargetselector="#bJS_ahl-paginationTest-target">3</a>
+				</li>
+				<li class="page-number">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=4" data-alloader="true" data-alsourceselector="#bJS_ahl-paginationTest-source" data-altargetselector="#bJS_ahl-paginationTest-target">4</a>
+				</li>
+				<li class="page-number">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=5" data-alloader="true" data-alsourceselector="#bJS_ahl-paginationTest-source" data-altargetselector="#bJS_ahl-paginationTest-target">5</a>
+				</li>
+				<li class="page-last">
+					<a href="/tabledata/" class="mJS_ajaxLoader" data-almethod="POST" data-alaction="replace" data-alparams="page=5" data-alloader="true">&gt;&gt;</a>
+				</li>
+			</ul>
+		</div>
+	</section>
 </main>
 
 </body>
