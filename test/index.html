@@ -17,12 +17,17 @@
 </header>
 <main class="container">
 
-	<a href="/ajax-source.html" class="mJS_ajaxLoader" data-alaction="replace" data-alsource="#bJS_targetReplacementContainer" data-altarget="#bJS_targetReplacementContainer">Load Content</a>
-
-	<div id="bJS_targetReplacementContainer">
-		OldContent
+	<div class="bJS_ahl-basicReplacementTest">
+		<h2>Basic Replacement Test</h2>
+		<div id="bJS_ahl-basicReplacementTest-target">
+			<p>Lorem ipsum text 1.</p>
+			<p>Lorem ipsum text 1 long. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+				tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+				justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+			</p>
+		</div>
+		<a href="/ajax-source.html" class="btn btn-default mJS_ajaxLoader" data-alaction="replace" data-alsourceselector="#bJS_ahl-basicReplacementTest-source" data-altargetselector="#bJS_ahl-basicReplacementTest-target">Replace Content</a>
 	</div>
-
 </main>
 
 </body>
