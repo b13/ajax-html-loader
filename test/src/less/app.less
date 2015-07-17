@@ -1,0 +1,23 @@
+section + section {
+	margin-top: 120px;
+}
+
+#bJS_paginationExampleFrame {
+	position: relative;
+
+	&.al_loader:after {
+		content: "";
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-image: url(/assets/ajax-loader.gif);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: auto;
+		z-index: 9999
+	}
+}
+

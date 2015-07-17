@@ -3,9 +3,10 @@ class TableDataProvider
   constructor: () ->
 
   sendTableData: (req, res) ->
+	  dataToSend = {}
 
 	  if req.method is 'GET'
-      pageIndex = req.query.page
+	    pageIndex = req.query.page
     else
 		  pageIndex = req.body.page
 
@@ -13,9 +14,12 @@ class TableDataProvider
       pageIndex = parseInt pageIndex
 
 	    if pageIndex >= 0 and pageIndex < tableData.length
-		    res.send tableData[pageIndex]
+		    dataToSend = tableData[pageIndex]
 
-    res.send()
+    setTimeout () ->
+        res.send dataToSend
+      , 2000
+
 
 
 tableData = [
@@ -55,6 +59,7 @@ tableData = [
 				</tr>
 			</tbody>
 		</table>'
+
   '<table class="table table-striped">
 			<thead>
 				<tr>
@@ -91,6 +96,7 @@ tableData = [
 				</tr>
 			</tbody>
 		</table>'
+
   '<table class="table table-striped">
 			<thead>
 				<tr>
@@ -127,6 +133,7 @@ tableData = [
 				</tr>
 			</tbody>
 		</table>'
+
   '<table class="table table-striped">
 			<thead>
 				<tr>
@@ -163,6 +170,7 @@ tableData = [
 				</tr>
 			</tbody>
 		</table>'
+
   '<table class="table table-striped">
 			<thead>
 				<tr>

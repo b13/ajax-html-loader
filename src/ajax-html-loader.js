@@ -18,6 +18,10 @@ define('ajax-html-loader', [
 		return newObj;
 	}
 
+	function hasClass(element, cls) {
+		return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+	}
+
 	/**
 	 * Constructor expects at least a DOM element and additionally some opts
 	 * @param el
@@ -40,9 +44,10 @@ define('ajax-html-loader', [
 			targetSelector       : 'data-altargetselector',
 			httpMethod           : 'data-almethod',
 			httpParams           : 'data-alparams',
-			addLoader            : 'data-alloader',
+			showLoader           : 'data-alloader',
 			loaderClass          : 'data-alloaderclass',
-			loaderTargetSelector : 'data-alloadertarget'
+			loaderTargetSelector : 'data-alloadertarget',
+			group                : 'data-algroup'
 		},
 
 		/**
@@ -55,10 +60,13 @@ define('ajax-html-loader', [
 			targetSelector       : 'al_target',
 			httpMethod           : 'GET',
 			httpParams           : "", 				//It is possible to set a function here
-			addLoaderClass       : true,
+			showLoader           : false,
 			loaderClass          : 'al_loader',
-			loaderTargetSelector : 'body'
+			loaderTargetSelector : 'body',
+			group                : ''
 		},
+
+		_groupStates: {},
 
 		/**
 		 * Initialize function that is called by the "constructor"
@@ -165,6 +173,19 @@ define('ajax-html-loader', [
 			return attributeOpts;
 		},
 
+		_getGroupState: function(groupName){
+			if(!this._groupStates[groupName]){
+				this._groupStates[groupName] = {
+					requestCount: 0
+				};
+			}
+			return this._groupStates[groupName];
+		},
+
+		_setGroupState: function(groupName, state){
+			this._groupStates[groupName] = mergeObjects(this._getGroupState(), state)
+		},
+
 		getAjaxSource: function(){
 			return this.el.getAttribute('href');
 		},
@@ -184,8 +205,8 @@ define('ajax-html-loader', [
 		getHttpParams: function(preventEvaluation){
 			return this.getOption('httpParams', preventEvaluation);
 		},
-		doAddLoaderClass: function(preventEvaluation){
-			return this.getOption('addLoaderClass', preventEvaluation);
+		doShowLoader: function(preventEvaluation){
+			return this.getOption('showLoader', preventEvaluation);
 		},
 		getLoaderClass: function(preventEvaluation){
 			return this.getOption('loaderClass', preventEvaluation);
@@ -213,6 +234,10 @@ define('ajax-html-loader', [
 				requestUrl += httpParams;
 			}
 			return requestUrl;
+		},
+
+		getGroupName: function(preventEvaluation){
+			return this.getOption('group', preventEvaluation) || false;
 		},
 
 		/**
@@ -245,14 +270,51 @@ define('ajax-html-loader', [
 				xhr = this._createXHR(),
 				httpMethod = this.getHttpMethod(),
 				httpParams = this.getHttpParams(),
-				requestURL = this.getRequestUrl();
+				requestURL = this.getRequestUrl(),
+				loaderClass          = this.getLoaderClass(),
+				loaderTargetSelector = this.getLoaderTargetSelector(),
+				loaderTarget = document.querySelector(loaderTargetSelector),
+				currentRequestCount = this._requestCount = this._requestCount + 1,
+				groupName = this.getGroupName(),
+				currentRequestCount;
+
+			if(groupName){
+				var groupSate = this._getGroupState(groupName);
+				currentRequestCount = groupSate.requestCount + 1;
+				if(groupSate.currentRequest) groupSate.currentRequest.abort();
+				this._setGroupState(groupName, {
+					requestCount: currentRequestCount,
+					currentRequest: xhr
+				});
+			}
+
+			if(this.doShowLoader()){
+				if(!hasClass(loaderTarget, loaderClass)){
+					if(loaderTarget.className.length){
+						loaderTarget.className += ' '
+					}
+					loaderTarget.className += loaderClass;
+				}
+			}
 
 			xhr.onreadystatechange = function(){
 				if(xhr.readyState == 4){
+
+					if(groupName && currentRequestCount){
+						if(ahl._getGroupState(groupName).requestCount != currentRequestCount) return;
+					}
+
 					if(xhr.status == 200){
 						if(typeof onSuccess === 'function') onSuccess.call(ahl, xhr.responseText, xhr);
 					} else {
-						if(typeof onError === 'function')   onError.call(ahl, xhr.responseText, xhr);
+						if(typeof onError === 'function') onError.call(ahl, xhr.responseText, xhr);
+					}
+
+					if(hasClass(loaderTarget, loaderClass)){
+						var matchingRegEx = new RegExp("\ ?" + loaderClass),
+							matchingString = loaderTarget.className.match(matchingRegEx);
+
+						loaderTarget.className = loaderTarget.className.replace(matchingString, "");
 					}
 				}
 			};
@@ -260,14 +322,6 @@ define('ajax-html-loader', [
 			xhr.open(httpMethod, requestURL, true);
 			//Send the proper header information along with the request
 			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			//if(httpMethod != 'GET'){
-			//	console.log("NO GET METHOD");
-			//	xhr.setRequestHeader("Content-length", httpParams.length);
-			//	xhr.setRequestHeader("Connection", "close");
-			//}
-
-			console.log("LOAD AJAX CONTENT");
-			console.log(httpParams);
 
 			if(httpMethod == 'GET'){
 				xhr.send();
