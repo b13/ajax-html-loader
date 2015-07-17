@@ -18,6 +18,7 @@ module.exports = function (grunt) {
 
 		clean: {
 			build: ['dist/*'],
+			dev :  ['test/dist/js/contrib/ajax-html-loader.js'],
 			test : ['test/dist/*']
 		},
 
@@ -25,11 +26,17 @@ module.exports = function (grunt) {
 			release: {
 				files: [{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'dist/'}]
 			},
+			dev: {
+				files: [
+					{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'test/dist/js/contrib/'}
+				]
+			},
 			test: {
 				files: [
 					{expand: true, flatten: true, src: ['bower_components/jquery/dist/jquery.js'], dest: 'test/dist/js/contrib/'},
-					{expand: true, flatten: true, src: ['bower_components/jquery/require.js'], dest: 'test/dist/js/contrib/'},
-					{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'test/dist/js/contrib/'}
+					{expand: true, flatten: true, src: ['bower_components/requirejs/require.js'], dest: 'test/dist/js/contrib/'},
+					{expand: true, flatten: true, src: ['src/ajax-html-loader.js'], dest: 'test/dist/js/contrib/'},
+					{expand: true, flatten: true, src: ['test/src/js/test.js'], dest: 'test/dist/js/'}
 				]
 			}
 		},
@@ -68,18 +75,6 @@ module.exports = function (grunt) {
 			}
 		},
 
-		requirejs: {
-			test: {
-				options: {
-					name            : 'config'
-					, mainConfigFile: 'test/src/js/config.js'
-					, out           : 'test/dist/js/test.js'
-					, optimize      : 'none'
-					, findNestedDependencies: true
-				}
-			}
-		},
-
 		uglify: {
 			options: {
 				banner: '<%= banner %>'
@@ -93,7 +88,7 @@ module.exports = function (grunt) {
 		watch : {
 			dev: {
 				files: ['src/**/*.js'],
-				tasks: ['devBuild']
+				tasks: ['clean:dev', 'copy:dev']
 			}
 		}
 	});
@@ -104,14 +99,13 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-less');
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-nodemon');
 
 	grunt.registerTask('release', ['copy:release', 'uglify']);
 
-	grunt.registerTask('devBuild', ['clean:test', 'copy:test', 'less:test', 'requirejs:test']);
+	grunt.registerTask('devBuild', ['clean:test', 'copy:test', 'less:test']);
 	grunt.registerTask('dev', ['devBuild', 'concurrent:dev']);
 
 };

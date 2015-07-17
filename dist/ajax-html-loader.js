@@ -13,11 +13,11 @@ define('ajax-html-loader', [
 		return newObj;
 	}
 
-	var AjaxModule = function(el, opts){
+	var AjaxHTMLLoader = function(el, opts){
 		this.initialize(el, opts);
 	};
 
-	AjaxModule.prototype = {
+	AjaxHTMLLoader.prototype = {
 
 		defaultOpts: {
 			actionType           : 'append', 		//Also possible is replace
@@ -33,6 +33,7 @@ define('ajax-html-loader', [
 		initialize: function(el, opts){
 			this.el = el;
 			this.opts = {};
+			console.log("INIT ")
 		},
 
 		getOptions: function(){
@@ -46,6 +47,6 @@ define('ajax-html-loader', [
 		}
 	};
 
-	return AjaxModule;
+	return AjaxHTMLLoader;
 
 });
