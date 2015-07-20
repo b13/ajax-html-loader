@@ -210,7 +210,7 @@ define('ajax-html-loader', [
 		 * @private
 		 */
 		_extractContentFromResponseHTML: function(responseHTML){
-			var dummyEl = document.createElement( 'html'),
+			var dummyEl = document.createElement( 'div'),
 				sourceSelector = this.getSourceSelector();
 
 			dummyEl.innerHTML = responseHTML;
