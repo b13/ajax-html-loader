@@ -36,7 +36,7 @@ define('ajax-html-loader', [
 	 * @constructor
 	 */
 	var AjaxHTMLLoader = function(el, opts){
-		this.initialize(el, opts);
+		this._initialize(el, opts);
 	};
 
 	AjaxHTMLLoader.prototype = {
@@ -103,8 +103,9 @@ define('ajax-html-loader', [
 		 * Initialize function that is called by the "constructor"
 		 * @param el
 		 * @param opts
+		 * @private
 		 */
-		initialize: function(el, opts){
+		_initialize: function(el, opts){
 			this.el = el;
 			this.opts = mergeObjects(this.defaultOpts, this._getOptionsFromDataAttributes(), opts);
 
@@ -278,84 +279,76 @@ define('ajax-html-loader', [
 		 * Returns action how the loaded content will be used.
 		 * Returns append or replace.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getActionType: function(preventEvaluation){
-			return this.getOption('actionType', preventEvaluation);
+		getActionType: function(){
+			return this.getOption('actionType');
 		},
 
 		/**
 		 * Returns the CSS selector to extract the desired content out of the loaded html
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getSourceSelector: function(preventEvaluation){
-			return this.getOption('sourceSelector', preventEvaluation);
+		getSourceSelector: function(){
+			return this.getOption('sourceSelector');
 		},
 
 		/**
 		 * Returns the CSS selector from which the inner content will be either replaced by the source content or to
 		 * which the source content will be appended.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getTargetSelector: function(preventEvaluation){
-			return this.getOption('targetSelector', preventEvaluation);
+		getTargetSelector: function(){
+			return this.getOption('targetSelector');
 		},
 
 		/**
 		 * Returns the defined HTTP method that is used to load the ajax content.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getHttpMethod: function(preventEvaluation){
-			return this.getOption('httpMethod', preventEvaluation);
+		getHttpMethod: function(){
+			return this.getOption('httpMethod');
 		},
 
 		/**
 		 * Returns the defined HTTP params that are send in the http request
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getHttpParams: function(preventEvaluation){
-			return this.getOption('httpParams', preventEvaluation);
+		getHttpParams: function(){
+			return this.getOption('httpParams');
 		},
 
 		/**
 		 * Returns the loader setting, that defines if a loader CSS class should be added while loading the content.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		doShowLoader: function(preventEvaluation){
-			return this.getOption('showLoader', preventEvaluation);
+		doShowLoader: function(){
+			return this.getOption('showLoader');
 		},
 
 		/**
 		 * Returns the class that will be added to the element, defined by the loaderTargetSelector option, while
 		 * loading, if the showLoader option is true.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getLoaderClass: function(preventEvaluation){
-			return this.getOption('loaderClass', preventEvaluation);
+		getLoaderClass: function(){
+			return this.getOption('loaderClass');
 		},
 
 		/**
 		 * Returns the value of the targetSelector option. This defines where the loaded and extracted content should
 		 * either replace the old content or be appended to it.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*}
 		 */
-		getLoaderTargetSelector: function(preventEvaluation){
-			return this.getOption('loaderTargetSelector', preventEvaluation);
+		getLoaderTargetSelector: function(){
+			return this.getOption('loaderTargetSelector');
 		},
 
 		/**
@@ -393,11 +386,10 @@ define('ajax-html-loader', [
 		 * Returns the loading group name if defined. The group name is used to synchronize the loading state between
 		 * multiple links and ajax-html-loader instances.
 		 *
-		 * @param preventEvaluation
 		 * @returns {*|boolean}
 		 */
-		getGroupName: function(preventEvaluation){
-			return this.getOption('group', preventEvaluation) || false;
+		getGroupName: function(){
+			return this.getOption('group') || false;
 		},
 
 		/**
