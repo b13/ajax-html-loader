@@ -232,6 +232,13 @@ define('ajax-html-loader', [
 			return attributeOpts;
 		},
 
+		/**
+		 * Return saved group state. Group is defined by name.
+		 *
+		 * @param groupName
+		 * @returns {*}
+		 * @private
+		 */
 		_getGroupState: function(groupName){
 			if(!this._groupStates[groupName]){
 				this._groupStates[groupName] = {
@@ -241,44 +248,125 @@ define('ajax-html-loader', [
 			return this._groupStates[groupName];
 		},
 
+		/**
+		 * Set group state by groupName
+		 *
+		 * @param groupName
+		 * @param state
+		 * @private
+		 */
 		_setGroupState: function(groupName, state){
 			this._groupStates[groupName] = mergeObjects(this._getGroupState(), state)
 		},
 
+		/**
+		 * Return ajax source from which the content will be loaded.
+		 *
+		 * @returns {string}
+		 */
 		getAjaxSource: function(){
-			return this.el.getAttribute('href');
+			return this.getOption('ajaxSource') || this.el.getAttribute('href');
 		},
 
+		/**
+		 * Returns action how the loaded content will be used.
+		 * Returns append or replace.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getActionType: function(preventEvaluation){
 			return this.getOption('actionType', preventEvaluation);
 		},
+
+		/**
+		 * Returns the CSS selector to extract the desired content out of the loaded html
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getSourceSelector: function(preventEvaluation){
 			return this.getOption('sourceSelector', preventEvaluation);
 		},
+
+		/**
+		 * Returns the CSS selector from which the inner content will be either replaced by the source content or to
+		 * which the source content will be appended.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getTargetSelector: function(preventEvaluation){
 			return this.getOption('targetSelector', preventEvaluation);
 		},
+
+		/**
+		 * Returns the defined HTTP method that is used to load the ajax content.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getHttpMethod: function(preventEvaluation){
 			return this.getOption('httpMethod', preventEvaluation);
 		},
+
+		/**
+		 * Returns the defined HTTP params that are send in the http request
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getHttpParams: function(preventEvaluation){
 			return this.getOption('httpParams', preventEvaluation);
 		},
+
+		/**
+		 * Returns the loader setting, that defines if a loader CSS class should be added while loading the content.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		doShowLoader: function(preventEvaluation){
 			return this.getOption('showLoader', preventEvaluation);
 		},
+
+		/**
+		 * Returns the class that will be added to the element, defined by the loaderTargetSelector option, while
+		 * loading, if the showLoader option is true.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getLoaderClass: function(preventEvaluation){
 			return this.getOption('loaderClass', preventEvaluation);
 		},
+
+		/**
+		 * Returns the value of the targetSelector option. This defines where the loaded and extracted content should
+		 * either replace the old content or be appended to it.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getLoaderTargetSelector: function(preventEvaluation){
 			return this.getOption('loaderTargetSelector', preventEvaluation);
 		},
 
+		/**
+		 * Returns the element(s) to which the loaded content will be applied.
+		 *
+		 * @returns {NodeList}
+		 */
 		getTargetElements: function(){
 			var targetSelector = this.getTargetSelector();
 			return document.querySelectorAll(targetSelector);
 		},
 
+		/**
+		 * Returns the request URL value that will be used to load the content.
+		 *
+		 * @returns {*|string}
+		 */
 		getRequestUrl: function(){
 			var httpMethod = this.getHttpMethod(),
 				requestUrl = this.getAjaxSource(),
@@ -295,12 +383,19 @@ define('ajax-html-loader', [
 			return requestUrl;
 		},
 
+		/**
+		 * Returns the loading group name if defined. The group name is used to synchronize the loading state between
+		 * multiple links and ajax-html-loader instances.
+		 *
+		 * @param preventEvaluation
+		 * @returns {*|boolean}
+		 */
 		getGroupName: function(preventEvaluation){
 			return this.getOption('group', preventEvaluation) || false;
 		},
 
 		/**
-		 * Copies the opts object and evaluates the functions that are given as opts
+		 * Copies the opts object and evaluates the functions that are given as opts.
 		 *
 		 * @returns {{}|*}
 		 */
@@ -308,6 +403,13 @@ define('ajax-html-loader', [
 			return mergeObjects(this.opts);
 		},
 
+		/**
+		 * Returns an option defined by the optionName
+		 *
+		 * @param optionName
+		 * @param preventEvaluation
+		 * @returns {*}
+		 */
 		getOption: function(optionName, preventEvaluation){
 			var rawOption = this.opts[optionName];
 
@@ -316,7 +418,7 @@ define('ajax-html-loader', [
 		},
 
 		/**
-		 * Update the options
+		 * Update the options.
 		 * @param opts
 		 */
 		setOptions: function(opts){
@@ -324,6 +426,13 @@ define('ajax-html-loader', [
 			this.opts = mergeObjects(this.opts, opts);
 		},
 
+		/**
+		 * Function that loads ajax content asynchronously.
+		 *
+		 * @param opts
+		 * @param onSuccess
+		 * @param onError
+		 */
 		loadAjaxContent: function(opts, onSuccess, onError){
 			var ahl = this,
 				xhr = this._createXHR(),
@@ -337,17 +446,27 @@ define('ajax-html-loader', [
 				groupName = this.getGroupName(),
 				currentRequestCount;
 
+			//Get group state if group name is defined.
 			if(groupName){
+				// Get group state
 				var groupSate = this._getGroupState(groupName);
+
+				// Increment the request count that is used to identify the current request.
 				currentRequestCount = groupSate.requestCount + 1;
+
+				// Abort a current request before starting a new one.
 				if(groupSate.currentRequest) groupSate.currentRequest.abort();
+
+				// Set group state
 				this._setGroupState(groupName, {
 					requestCount: currentRequestCount,
 					currentRequest: xhr
 				});
 			}
 
+			// Set loader class if showLoader option is true.
 			if(this.doShowLoader()){
+				//Add class if it is not already set.
 				if(!hasClass(loaderTarget, loaderClass)){
 					if(loaderTarget.className.length){
 						loaderTarget.className += ' '
@@ -356,6 +475,7 @@ define('ajax-html-loader', [
 				}
 			}
 
+			// Handle request state changes and especially it the response is loaded.
 			xhr.onreadystatechange = function(){
 				if(xhr.readyState == 4){
 
@@ -389,6 +509,11 @@ define('ajax-html-loader', [
 			}
 		},
 
+		/**
+		 * Function to append content to the inner content of the target container.
+		 *
+		 * @param contentToAppend
+		 */
 		appendContent: function(contentToAppend){
 			var targetSelector = this.getTargetSelector(),
 				targetContainer = document.querySelector(targetSelector);
@@ -400,6 +525,11 @@ define('ajax-html-loader', [
 			}
 		},
 
+		/**
+		 * Function to replace the inner content of
+		 *
+		 * @param replacementContent
+		 */
 		replaceContent: function(replacementContent){
 			var targetSelector = this.getTargetSelector(),
 				targetContainer = document.querySelector(targetSelector);
