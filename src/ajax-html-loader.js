@@ -141,7 +141,14 @@ define('ajax-html-loader', [
 			var ahl = this,
 				opts = this.getOptions();
 
-			evt.preventDefault();
+			// This check is for IE8 compatibility
+			if(evt.preventDefault){
+				evt.preventDefault();
+			}
+			else {
+				evt.returnValue = false;
+			}
+
 
 			this.loadAjaxContent(
 				opts,
@@ -204,7 +211,7 @@ define('ajax-html-loader', [
 		 * @private
 		 */
 		_extractContentFromResponseHTML: function(responseHTML){
-			var dummyEl = document.createElement( 'html'),
+			var dummyEl = document.createElement( 'div'),
 				sourceSelector = this.getSourceSelector();
 
 			dummyEl.innerHTML = responseHTML;
