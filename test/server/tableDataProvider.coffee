@@ -16,6 +16,7 @@ class TableDataProvider
 	    if pageIndex >= 0 and pageIndex < tableData.length
 		    dataToSend = tableData[pageIndex]
 
+		#	Simulate delay through Timeout
     setTimeout () ->
         res.send dataToSend
       , 2000
