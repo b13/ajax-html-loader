@@ -141,7 +141,13 @@ define('ajax-html-loader', [
 			var ahl = this,
 				opts = this.getOptions();
 
-			evt.preventDefault();
+			// IE8 compatibility fix
+			if(evt.preventDefault){
+				evt.preventDefault();
+			}
+			else {
+				evt.returnValue = false;
+			}
 
 			this.loadAjaxContent(
 				opts,
