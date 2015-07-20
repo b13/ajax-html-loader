@@ -11,7 +11,7 @@
   ],
   "homepage": "https://github.com/b13/ajax-html-loader",
   "main": "dist/ajax-html-loader.min.js",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "license": "MIT",
   "authors": [
     {
