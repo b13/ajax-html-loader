@@ -523,7 +523,7 @@ define('ajax-html-loader', [
 			var targetSelector = this.getTargetSelector(),
 				targetContainer = document.querySelector(targetSelector);
 
-			if(contentToAppend){
+			if(contentToAppend && targetContainer){
 				while (contentToAppend.firstChild) {
 					targetContainer.appendChild(contentToAppend.firstChild);
 				}
