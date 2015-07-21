@@ -54,7 +54,8 @@ define('ajax-html-loader', [
 			showLoader           : 'data-alloader',
 			loaderClass          : 'data-alloaderclass',
 			loaderTargetSelector : 'data-alloadertarget',
-			group                : 'data-algroup'
+			group                : 'data-algroup',
+			initLoading          : 'data-alinitloading'
 		},
 
 		/**
@@ -91,13 +92,21 @@ define('ajax-html-loader', [
 			loaderTargetSelector : 'body',
 
 			// Group can be defined if multiple links should work as if they would have only one loader.
-			group                : ''
+			group                : '',
+
+			// Defines if loading should be started automatically after initialization.
+			initLoading          : false
 		},
 
 		/**
 		 * Private prototype attribute, to manage group states.
 		 */
 		_groupStates: {},
+
+		/**
+		 * Counter of initialized anonymous groups
+		 */
+		_anonymousGroupCount: 0,
 
 		/**
 		 * Initialize function that is called by the "constructor"
@@ -110,6 +119,8 @@ define('ajax-html-loader', [
 			this.opts = mergeObjects(this.defaultOpts, this._getOptionsFromDataAttributes(), opts);
 
 			this._bindEvents();
+
+			if(this.doLoadInitially()) this.triggerContentLoading();
 		},
 
 		/**
@@ -225,6 +236,9 @@ define('ajax-html-loader', [
 				var attributeName = this.attributeOptionsMapping[attrOpt],
 					optVal        = this.el.getAttribute(attributeName);
 
+				if(optVal === 'true')  optVal = true;
+				if(optVal === 'false') optVal = false;
+
 				if(typeof optVal !== 'undefined' && optVal !== null && optVal !== ''){
 					attributeOpts[attrOpt] = optVal;
 				}
@@ -313,7 +327,24 @@ define('ajax-html-loader', [
 		 * @returns {*}
 		 */
 		getHttpParams: function(){
-			return this.getOption('httpParams');
+			var clickableType = this.el.getAttribute('type'),
+				httpParams = this.getOption('httpParams');
+			if(clickableType && clickableType === 'submit'){
+				var formEl = this.getParentForm(),
+					formParams = "";
+
+				if(formEl){
+					var formValues = this.getFormValues(formEl);
+					for(var key in formValues){
+						formParams += "&" + key + "=" + formValues[key]
+					}
+				}
+				if(!httpParams.length){
+					formParams = formParams.substring(1);
+				}
+				httpParams += formParams;
+			}
+			return httpParams;
 		},
 
 		/**
@@ -366,6 +397,22 @@ define('ajax-html-loader', [
 				httpParams = this.getHttpParams();
 
 			if(httpMethod == 'GET' && httpParams && httpParams.length){
+				var encodedHTTPParams = "",
+					paramsArray = httpParams.splice('&');
+
+				for(var i in paramsArray){
+					var keyValueArray = paramsArray[i].splice('=');
+					if(keyValueArray[0]){
+						encodedHTTPParams += encodeURIComponent(keyValueArray[0]) + '=';
+						if(keyValueArray[1]){
+							encodedHTTPParams += encodeURIComponent(keyValueArray[1]);
+						}
+						if(i < paramsArray.length - 1){
+							encodedHTTPParams += '&'
+						}
+					}
+				}
+
 				if(requestUrl.indexOf('?') >= 0) {
 					requestUrl += "&";
 				} else {
@@ -383,7 +430,61 @@ define('ajax-html-loader', [
 		 * @returns {*|boolean}
 		 */
 		getGroupName: function(){
-			return this.getOption('group') || false;
+			var groupName = this.getOption('group') || this._privateGroup;
+
+			if(!groupName){
+				this._anonymousGroupCount++;
+				groupName = "__al-group-" + this._anonymousGroupCount + "__";
+				this._privateGroup = groupName;
+			}
+			return  groupName;
+		},
+
+		/**
+		 * Searches in all parent elements of the clickable element for a form element and returns it, if found.
+		 *
+		 * @returns {undefined}
+		 */
+		getParentForm: function() {
+			var resultParent = undefined,
+				currentIterationElement = this.el;
+
+			while(!resultParent && currentIterationElement.parentElement){
+				if(currentIterationElement.parentElement.tagName == 'FORM'){
+					resultParent = currentIterationElement.parentElement;
+				}
+				else {
+					currentIterationElement = currentIterationElement.parentElement
+				}
+			}
+
+			return resultParent;
+		},
+
+		doLoadInitially: function(){
+			return this.getOption('initLoading');
+		},
+
+		getFormValues: function(formEl){
+			var formValues = false;
+
+			if(formEl){
+				formValues = {};
+
+				for(var i = 0; i < formEl.elements.length; i++){
+
+					var inputElement = formEl.elements[i],
+						inputElementName = inputElement.tagName,
+						inputType = inputElement.getAttribute('type'),
+						key = inputElement.getAttribute('name');
+
+					if(inputElementName == 'INPUT' && ((inputType != "radio" && inputType != "checkbox") || inputElement.checked) && inputElement.value){
+						formValues[key] = inputElement.value;
+					}
+				}
+			}
+
+			return formValues
 		},
 
 		/**
