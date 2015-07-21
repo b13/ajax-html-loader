@@ -150,9 +150,6 @@ define('ajax-html-loader', [
 		 * @private
 		 */
 		_handleClickEvent: function(evt){
-			var ahl = this,
-				opts = this.getOptions();
-
 			// IE8 compatibility fix
 			if(evt.preventDefault){
 				evt.preventDefault();
