@@ -58,7 +58,7 @@ class FormExampleProvider
     filteredData = []
 
     for datum in data
-      if (exactValue and datum[key] is value) or (not exactValue and datum[key].match new RegExp(value))
+      if (exactValue and datum[key].toLowerCase() is value.toLowerCase()) or (not exactValue and datum[key].match new RegExp(value,"i"))
         filteredData.push datum
 
     return filteredData
