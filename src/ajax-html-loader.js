@@ -150,13 +150,7 @@ define('ajax-html-loader', [
 				evt.returnValue = false;
 			}
 
-			this.loadAjaxContent(
-				opts,
-				// Will be called if the content loading was successful
-				function(responseText, xhr){
-					ahl._handleContentLoadSuccess.call(ahl, responseText, xhr)
-				}
-			);
+			this.triggerContentLoading();
 		},
 
 		/**
@@ -422,6 +416,19 @@ define('ajax-html-loader', [
 		setOptions: function(opts){
 			//Call mergeObjects to create a flat copy of the opts object
 			this.opts = mergeObjects(this.opts, opts);
+		},
+
+		triggerContentLoading: function(){
+			var ahl = this,
+				opts = this.getOptions();
+
+			this.loadAjaxContent(
+				opts,
+				// Will be called if the content loading was successful
+				function(responseText, xhr){
+					ahl._handleContentLoadSuccess.call(ahl, responseText, xhr)
+				}
+			);
 		},
 
 		/**
