@@ -110,6 +110,7 @@ showLoader | data-alloader | Boolean or Function | false | Define if a loader cs
 loaderClass | data-alloaderclass | String or Function | "al_loader" | Class that will be added if showLoader is true.
 loaderTargetSelector | data-alloadertarget | String or Function | "body" | Element selector to which the loaderClass will be added if showLoader is true.
 group | data-algroup | String or Function | "" | Group can be defined if multiple links should work as if they would have only one loader.
+initLoading | data-alinitloading | Boolean | false | // Defines if loading should be started automatically after initialization.
 
 Many of the options can be passed as functions if they are passed in JS. This won't work for options that are passed as
 HTML attribute, because we want to avoid the use of eval.
@@ -132,9 +133,13 @@ getLoaderTargetSelector | String | Returns the value of the loaderTargetSelector
 getTargetElements | Array[HTMLElement] | Returns an array with HTMLElement-objects that match the targetSelector.
 getRequestUrl | String | Builds and returns the request URL that will be used to load the ajax content. The function respects the defined ajax source as well as the http method and the http params.
 getGroupName | String | Returns the value of the group option.
+doLoadInitially | Boolean | Returns the value of the initLoading option.
 getOptions | Object | Returns a copy of the options object. The option provided in this object are not evaluated. That means if options are defined as functions, they will be also represented as functions and not as their evalution values.
 getOption(String: optionName, Boolean: preventEvaluation) | String/Boolean/Function | Returns an option defined by its' name. If an option is provided as function, the preventEvaluation parameter determines if the option should be returned as function or if the function should be evaluated.
-setOptions(Object: opts) | void(0) | Expects an object with option keys and their values. This function will override only the provided options.
-loadAjaxContent(Object: opts, Function: onSuccess, Function: onError) | void(0) | The loading function that starts the xhr request and handels the response handling.
-appendContent:(HTMLElement: contentToAppend) | void(0) | Function that appends provided HTMLElement content to the inner HTML of the target.
-replaceContent:(HTMLElement: replacementContent) | void(0) | Function that replaces the inner HTML of the target with the provided HTMLElement content.
+setOptions(Object: opts) | undefined | Expects an object with option keys and their values. This function will override only the provided options.
+getParentForm | HTMLElement / undefined | Searches in all parent elements of the clickable element for a form element and returns it, if found.
+getFormValues(HTMLElement: formEl) | Object | Returns all active values of input fields inside the given form.
+loadAjaxContent(Object: opts, Function: onSuccess, Function: onError) | undefined | The loading function that starts the xhr request and handels the response handling.
+triggerContentLoading | undefined | Triggers content loading and handling.
+appendContent:(HTMLElement: contentToAppend) | undefined | Function that appends provided HTMLElement content to the inner HTML of the target.
+replaceContent:(HTMLElement: replacementContent) | undefined | Function that replaces the inner HTML of the target with the provided HTMLElement content.
