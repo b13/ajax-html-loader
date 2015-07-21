@@ -6764,13 +6764,13 @@ button.close {
     display: none !important;
   }
 }
+body {
+  padding-bottom: 300px;
+}
 section + section {
   margin-top: 120px;
 }
-#bJS_paginationExampleFrame {
-  position: relative;
-}
-#bJS_paginationExampleFrame.al_loader:after {
+.al_loader:after {
   content: "";
   display: block;
   position: absolute;
@@ -6783,4 +6783,18 @@ section + section {
   background-position: center;
   background-size: auto;
   z-index: 9999;
+}
+#bJS_paginationExampleFrame {
+  position: relative;
+}
+#bJS_formExample form {
+  position: relative;
+}
+#bJS_formExample form.al_loader:after {
+  width: 50px;
+  height: 50px;
+  top: -14px;
+  right: 40px;
+  bottom: auto;
+  left: auto;
 }
