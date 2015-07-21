@@ -26,7 +26,10 @@ define('ajax-html-loader', [
 	 * @returns {boolean}
 	 */
 	function hasClass(element, cls) {
-		return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+		if(element){
+			return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+		}
+		return false;
 	}
 
 	/**
@@ -150,9 +153,6 @@ define('ajax-html-loader', [
 		 * @private
 		 */
 		_handleClickEvent: function(evt){
-			var ahl = this,
-				opts = this.getOptions();
-
 			// IE8 compatibility fix
 			if(evt.preventDefault){
 				evt.preventDefault();
@@ -573,7 +573,7 @@ define('ajax-html-loader', [
 			// Set loader class if showLoader option is true.
 			if(this.doShowLoader()){
 				//Add class if it is not already set.
-				if(!hasClass(loaderTarget, loaderClass)){
+				if(loaderTarget && !hasClass(loaderTarget, loaderClass)){
 					if(loaderTarget.className.length){
 						loaderTarget.className += ' '
 					}
