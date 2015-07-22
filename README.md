@@ -111,10 +111,10 @@ loaderClass | data-alloaderclass | String or Function | "al_loader" | Class that
 loaderTargetSelector | data-alloadertarget | String or Function | "body" | Element selector to which the loaderClass will be added if showLoader is true.
 group | data-algroup | String or Function | "" | Group can be defined if multiple links should work as if they would have only one loader.
 initLoading | data-alinitloading | Boolean | false | // Defines if loading should be started automatically after initialization.
-beforeLoading | N.A. | Function/Array[Function] | undefined | One or multiple before loading callbacks.
-onLoading | N.A. | Function/Array[Function] | undefined | One or multiple on loading callbacks.
-onLoadingSuccess | N.A. | Function/Array[Function] | undefined | One or multiple on loading success callbacks.
-onLoadingError | N.A. | Function/Array[Function] | undefined | One or multiple on loading error callbacks.
+beforeLoading | N.A. | Function / Array[Function] | undefined | One or multiple before loading callbacks.
+onLoading | N.A. | Function / Array[Function] | undefined | One or multiple on loading callbacks.
+onLoadingSuccess | N.A. | Function / Array[Function] | undefined | One or multiple on loading success callbacks.
+onLoadingError | N.A. | Function / Array[Function] | undefined | One or multiple on loading error callbacks.
 
 Many of the options can be passed as functions if they are passed in JS. This won't work for options that are passed as
 HTML attribute, because we want to avoid the use of eval.
