@@ -121,6 +121,63 @@ define('ajax-html-loader', [
 			this.el = el;
 			this.opts = mergeObjects(this.defaultOpts, this._getOptionsFromDataAttributes(), opts);
 
+			this._beforeLoadingHandlers = [];
+			this._onLoadingHandlers = [];
+			this._onLoadingSuccessHandlers = [];
+			this._onLoadingErrorhandlers = [];
+
+			//Register before loading handlers
+			if(this.opts.beforeLoading){
+				if(typeof this.opts.beforeLoading === 'function'){
+					this.registerBeforeLoading(this.opts.beforeLoading);
+				} else if(this.opts.beforeLoading instanceof Array) {
+					for(var i in this.opts.beforeLoading){
+						if(typeof this.opts.beforeLoading[i] === 'function'){
+							this.registerBeforeLoading(this.opts.beforeLoading[i]);
+						}
+					}
+				}
+			}
+
+			//Register on loading handlers
+			if(this.opts.onLoading){
+				if(typeof this.opts.onLoading === 'function'){
+					this.registerOnLoading(this.opts.onLoading);
+				} else if(this.opts.onLoading instanceof Array) {
+					for(var i in this.opts.onLoading){
+						if(typeof this.opts.onLoading[i] === 'function'){
+							this.registerOnLoading(this.opts.onLoading[i]);
+						}
+					}
+				}
+			}
+
+			//Register on loading success handlers
+			if(this.opts.onLoadingSuccess){
+				if(typeof this.opts.onLoadingSuccess === 'function'){
+					this.registerOnLoadingSuccess(this.opts.onLoadingSuccess);
+				} else if(this.opts.onLoadingSuccess instanceof Array) {
+					for(var i in this.opts.onLoadingSuccess){
+						if(typeof this.opts.onLoadingSuccess[i] === 'function'){
+							this.registerOnLoadingSuccess(this.opts.onLoadingSuccess[i]);
+						}
+					}
+				}
+			}
+
+			//Register on loading error handlers
+			if(this.opts.onLoadingError){
+				if(typeof this.opts.onLoadingError === 'function'){
+					this.registerOnLoadingError(this.opts.onLoadingError);
+				} else if(this.opts.onLoadingError instanceof Array) {
+					for(var i in this.opts.onLoadingError){
+						if(typeof this.opts.onLoadingError[i] === 'function'){
+							this.registerOnLoadingError(this.opts.onLoadingError[i]);
+						}
+					}
+				}
+			}
+
 			this._bindEvents();
 
 			if(this.doLoadInitially()) this.triggerContentLoading();
@@ -519,6 +576,9 @@ define('ajax-html-loader', [
 			this.opts = mergeObjects(this.opts, opts);
 		},
 
+		/**
+		 * Triggeres content loading.
+		 */
 		triggerContentLoading: function(){
 			var ahl = this,
 				opts = this.getOptions();
@@ -570,6 +630,13 @@ define('ajax-html-loader', [
 				});
 			}
 
+			// Call before loading handlers
+			for(var i in ahl._beforeLoadingHandlers){
+				if(typeof ahl._beforeLoadingHandlers[i] === 'function') {
+					ahl._beforeLoadingHandlers[i].call(ahl, ahl);
+				}
+			}
+
 			// Set loader class if showLoader option is true.
 			if(this.doShowLoader()){
 				//Add class if it is not already set.
@@ -591,9 +658,29 @@ define('ajax-html-loader', [
 
 					if(xhr.status == 200){
 						if(typeof onSuccess === 'function') onSuccess.call(ahl, xhr.responseText, xhr);
+						// Call on loading success handlers
+						for(var i in ahl._onLoadingSuccessHandlers){
+							if(typeof ahl._onLoadingSuccessHandlers[i] === 'function') {
+								ahl._onLoadingSuccessHandlers[i].call(ahl, xhr.responseText, xhr, ahl);
+							}
+						}
 					} else {
 						if(typeof onError === 'function') onError.call(ahl, xhr.responseText, xhr);
+						// Call on loading error handlers
+						for(var i in ahl._onLoadingErrorhandlers){
+							if(typeof ahl._onLoadingErrorhandlers[i] === 'function') {
+								ahl._onLoadingErrorhandlers[i].call(ahl, xhr.responseText, xhr, ahl);
+							}
+						}
 					}
+
+					// Call on loading handlers
+					for(var i in ahl._onLoadingHandlers){
+						if(typeof ahl._onLoadingHandlers[i] === 'function') {
+							ahl._onLoadingHandlers[i].call(ahl, xhr.responseText, xhr, ahl);
+						}
+					}
+
 
 					if(hasClass(loaderTarget, loaderClass)){
 						var matchingRegEx = new RegExp("\ ?" + loaderClass),
@@ -649,7 +736,116 @@ define('ajax-html-loader', [
 					targetContainer.appendChild(replacementContent.firstChild);
 				}
 			}
+		},
+
+		/**
+		 * Register before loading handler.
+		 *
+		 * @param beforeLoadingHandler
+		 * @returns {*}
+		 */
+		registerBeforeLoading: function(beforeLoadingHandler){
+			if(typeof beforeLoadingHandler === 'function'){
+				this._beforeLoadingHandlers.push(beforeLoadingHandler);
+				return beforeLoadingHandler;
+			}
+		},
+
+		/**
+		 * Unregister before loading handler.
+		 *
+		 * @param beforeLoadingHandler
+		 * @returns {*}
+		 */
+		unregisterBeforeLoading: function(beforeLoadingHandler){
+			var arrayIndex = this._beforeLoadingHandlers.indexOf(beforeLoadingHandler);
+			if(arrayIndex >= 0) {
+				this._beforeLoadingHandlers.splice(arrayIndex, 1);
+				return beforeLoadingHandler;
+			}
+		},
+
+		/**
+		 * Register on loading handler.
+		 *
+		 * @param onLoadingHandler
+		 * @returns {*}
+		 */
+		registerOnLoading: function(onLoadingHandler){
+			if(typeof onLoadingHandler === 'function') {
+				this._onLoadingHandlers.push(onLoadingHandler);
+				return onLoadingHandler;
+			}
+		},
+
+		/**
+		 * Unregister on loading handler.
+		 *
+		 * @param onLoadingHandler
+		 * @returns {*}
+		 */
+		unRegisterOnLoading: function(onLoadingHandler){
+			var arrayIndex = this._onLoadingHandlers.indexOf(onLoadingHandler);
+			if(arrayIndex >= 0) {
+				this._onLoadingHandlers.splice(arrayIndex, 1);
+				return onLoadingHandler;
+			}
+		},
+
+		/**
+		 * Register on loading success handler.
+		 *
+		 * @param onLoadingSuccessHandler
+		 * @returns {*}
+		 */
+		registerOnLoadingSuccess: function(onLoadingSuccessHandler){
+			if(typeof onLoadingSuccessHandler === 'function') {
+				this._onLoadingSuccessHandlers.push(onLoadingSuccessHandler);
+				return onLoadingSuccessHandler;
+			}
+		},
+
+		/**
+		 * Unregister on loading success handler.
+		 *
+		 * @param onLoadingSuccessHandler
+		 * @returns {*}
+		 */
+		unRegisterOnLoadingSuccess: function(onLoadingSuccessHandler){
+			var arrayIndex = this._onLoadingSuccessHandlers.indexOf(onLoadingSuccessHandler);
+			if(arrayIndex >= 0) {
+				this._onLoadingSuccessHandlers.splice(arrayIndex, 1);
+				return onLoadingSuccessHandler;
+			}
+		},
+
+		/**
+		 * Register on loading error handler.
+		 *
+		 * @param onLoadingErrorHandler
+		 * @returns {*}
+		 */
+		registerOnLoadingError: function(onLoadingErrorHandler){
+			if(typeof onLoadingErrorHandler === 'function') {
+				this._onLoadingErrorhandlers.push(onLoadingErrorHandler);
+				return onLoadingErrorHandler;
+			}
+		},
+
+		/**
+		 * Unregister on loading error handler.
+		 *
+		 * @param onLoadingErrorHandler
+		 * @returns {*}
+		 */
+		unRegisterOnLoadingError: function(onLoadingErrorHandler){
+			var arrayIndex = this._onLoadingErrorhandlers.indexOf(onLoadingErrorHandler);
+			if(arrayIndex >= 0) {
+				this._onLoadingErrorhandlers.splice(arrayIndex, 1);
+				return onLoadingErrorHandler;
+			}
 		}
+
 	};
 
 	return AjaxHTMLLoader;
