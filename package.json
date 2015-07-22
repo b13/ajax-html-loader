@@ -1,7 +1,7 @@
 {
   "name": "ajax-html-loader",
   "description": "An ajax module that handels asynchronously loading, adding and replacing of html content.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "node": ">= 0.10.36"
   },
