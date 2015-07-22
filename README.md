@@ -12,7 +12,7 @@ append HTML content anywhere on you web page.
 
 ### Install with bower
 
-	bower intall ajax-html-loader -S
+	bower install ajax-html-loader -S
 
 
 ### Base initialization with js only
@@ -111,6 +111,10 @@ loaderClass | data-alloaderclass | String or Function | "al_loader" | Class that
 loaderTargetSelector | data-alloadertarget | String or Function | "body" | Element selector to which the loaderClass will be added if showLoader is true.
 group | data-algroup | String or Function | "" | Group can be defined if multiple links should work as if they would have only one loader.
 initLoading | data-alinitloading | Boolean | false | // Defines if loading should be started automatically after initialization.
+beforeLoading | N.A. | Function/Array[Function] | undefined | One or multiple before loading callbacks.
+onLoading | N.A. | Function/Array[Function] | undefined | One or multiple on loading callbacks.
+onLoadingSuccess | N.A. | Function/Array[Function] | undefined | One or multiple on loading success callbacks.
+onLoadingError | N.A. | Function/Array[Function] | undefined | One or multiple on loading error callbacks.
 
 Many of the options can be passed as functions if they are passed in JS. This won't work for options that are passed as
 HTML attribute, because we want to avoid the use of eval.
@@ -126,20 +130,28 @@ getActionType() | String | Returns the value of the actionType option.
 getSourceSelector() | String | Returns the value of the sourceSelector option.
 getTargetSelector() | String | Returns the value of the targetSelector option.
 getHttpMethod() | String | Returns the value of the httpMethod option.
-getHttpParams | String | Returns the value of the httpParams option.
-doShowLoader | Boolean | Returns the value of the showLoader option.
-getLoaderClass | String | Returns the value of the loaderClass option.
-getLoaderTargetSelector | String | Returns the value of the loaderTargetSelector option.
-getTargetElements | Array[HTMLElement] | Returns an array with HTMLElement-objects that match the targetSelector.
-getRequestUrl | String | Builds and returns the request URL that will be used to load the ajax content. The function respects the defined ajax source as well as the http method and the http params.
-getGroupName | String | Returns the value of the group option.
-doLoadInitially | Boolean | Returns the value of the initLoading option.
-getOptions | Object | Returns a copy of the options object. The option provided in this object are not evaluated. That means if options are defined as functions, they will be also represented as functions and not as their evalution values.
+getHttpParams() | String | Returns the value of the httpParams option.
+doShowLoader() | Boolean | Returns the value of the showLoader option.
+getLoaderClass() | String | Returns the value of the loaderClass option.
+getLoaderTargetSelector() | String | Returns the value of the loaderTargetSelector option.
+getTargetElements() | Array[HTMLElement] | Returns an array with HTMLElement-objects that match the targetSelector.
+getRequestUrl() | String | Builds and returns the request URL that will be used to load the ajax content. The function respects the defined ajax source as well as the http method and the http params.
+getGroupName() | String | Returns the value of the group option.
+doLoadInitially() | Boolean | Returns the value of the initLoading option.
+getOptions() | Object | Returns a copy of the options object. The option provided in this object are not evaluated. That means if options are defined as functions, they will be also represented as functions and not as their evalution values.
 getOption(String: optionName, Boolean: preventEvaluation) | String/Boolean/Function | Returns an option defined by its' name. If an option is provided as function, the preventEvaluation parameter determines if the option should be returned as function or if the function should be evaluated.
 setOptions(Object: opts) | undefined | Expects an object with option keys and their values. This function will override only the provided options.
-getParentForm | HTMLElement / undefined | Searches in all parent elements of the clickable element for a form element and returns it, if found.
+getParentForm() | HTMLElement / undefined | Searches in all parent elements of the clickable element for a form element and returns it, if found.
 getFormValues(HTMLElement: formEl) | Object | Returns all active values of input fields inside the given form.
 loadAjaxContent(Object: opts, Function: onSuccess, Function: onError) | undefined | The loading function that starts the xhr request and handels the response handling.
-triggerContentLoading | undefined | Triggers content loading and handling.
-appendContent:(HTMLElement: contentToAppend) | undefined | Function that appends provided HTMLElement content to the inner HTML of the target.
-replaceContent:(HTMLElement: replacementContent) | undefined | Function that replaces the inner HTML of the target with the provided HTMLElement content.
+triggerContentLoading() | undefined | Triggers content loading and handling.
+appendContent(HTMLElement: contentToAppend) | undefined | Function that appends provided HTMLElement content to the inner HTML of the target.
+replaceContent(HTMLElement: replacementContent) | undefined | Function that replaces the inner HTML of the target with the provided HTMLElement content.
+registerBeforeLoading(Function: beforeLoadingHandler) | Function | Registers a callback that will be called before loading. And returns the callback if added.
+registerOnLoading(Function: onLoadingHandler) | Function | Registers a callback that will be called after loading. And returns the callback if added.
+registerOnLoadingSuccess(Function: onSuccessLoadingHandler) | Function | Registers a callback that will be called after successful loading. And returns the callback if added.
+registerOnLoadingError(Function: onErrorLoadingHandler) | Function | Registers a callback that will be called after failed loading. And returns the callback if added.
+unRegisterBeforeLoading(Function: beforeLoadingHandler) | Function | Unregisters a callback that was registered to be called before loading. And returns the callback if unregistering was successful.
+unRegisterOnLoading(Function: onLoadingHandler) | Function | Unregisters a callback that was registered to be called on loading. And returns the callback if unregistering was successful.
+unRegisterOnLoadingSuccess(Function: onSuccessLoadingHandler) | Function | Unregisters a callback that was registered to be called on successful loading. And returns the callback if unregistering was successful.
+unRegisterOnLoadingError(Function: onErrorLoadingHandler) | Function | Unregisters a callback that was registered to be called on loading failure. And returns the callback if unregistering was successful.
