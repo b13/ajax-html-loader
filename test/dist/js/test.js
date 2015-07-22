@@ -33,7 +33,9 @@ require([
 					return "/invalidPath.html";
 				},
 				onLoading: function(){alert("ON LOADING")},
-				onLoadingSuccess: function(){alert("ON LOADING SUCCESS")},
+				onLoadingSuccess: [
+					function(){alert("ON LOADING SUCCESS")}
+				],
 				onLoadingError: function(){alert("ON LOADING ERROR")}
 
 			})
