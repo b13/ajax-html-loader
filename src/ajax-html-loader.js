@@ -448,34 +448,39 @@ define('ajax-html-loader', [
 		 *
 		 * @returns {*|string}
 		 */
-		getRequestUrl: function(){
+		getRequestUrl: function(preventURLEncoding){
 			var httpMethod = this.getHttpMethod(),
 				requestUrl = this.getAjaxSource(),
 				httpParams = this.getHttpParams();
 
 			if(httpMethod == 'GET' && httpParams && httpParams.length){
-				var encodedHTTPParams = "",
-					paramsArray = httpParams.splice('&');
+				if(preventURLEncoding){
+					requestUrl += httpParams;
+				}
+				else {
+					var encodedHTTPParams = "",
+						paramsArray = httpParams.splice('&');
 
-				for(var i in paramsArray){
-					var keyValueArray = paramsArray[i].splice('=');
-					if(keyValueArray[0]){
-						encodedHTTPParams += encodeURIComponent(keyValueArray[0]) + '=';
-						if(keyValueArray[1]){
-							encodedHTTPParams += encodeURIComponent(keyValueArray[1]);
-						}
-						if(i < paramsArray.length - 1){
-							encodedHTTPParams += '&'
+					for(var i in paramsArray){
+						var keyValueArray = paramsArray[i].splice('=');
+						if(keyValueArray[0]){
+							encodedHTTPParams += encodeURIComponent(keyValueArray[0]) + '=';
+							if(keyValueArray[1]){
+								encodedHTTPParams += encodeURIComponent(keyValueArray[1]);
+							}
+							if(i < paramsArray.length - 1){
+								encodedHTTPParams += '&'
+							}
 						}
 					}
-				}
 
-				if(requestUrl.indexOf('?') >= 0) {
-					requestUrl += "&";
-				} else {
-					requestUrl += "?";
+					if(requestUrl.indexOf('?') >= 0) {
+						requestUrl += "&";
+					} else {
+						requestUrl += "?";
+					}
+					requestUrl += encodedHTTPParams;
 				}
-				requestUrl += httpParams;
 			}
 			return requestUrl;
 		},
