@@ -496,10 +496,6 @@ define('ajax-html-loader', [
 				requestUrl = this.getAjaxSource(),
 				httpParams = this.getHttpParams();
 
-			console.log("GET REQUEST URL");
-			console.log(httpMethod);
-			console.log(httpParams);
-
 			if(httpMethod == 'GET' && httpParams && httpParams.length){
 				if(preventURLEncoding){
 					requestUrl += httpParams;
@@ -507,8 +503,6 @@ define('ajax-html-loader', [
 				else {
 					var encodedHTTPParams = "",
 						paramsArray = httpParams.split('&');
-
-					console.log(paramsArray);
 
 					for(var i in paramsArray){
 						var keyValueArray = paramsArray[i].split('=');
@@ -523,8 +517,6 @@ define('ajax-html-loader', [
 						}
 					}
 
-					console.log(encodedHTTPParams);
-
 					if(requestUrl.indexOf('?') >= 0) {
 						requestUrl += "&";
 					} else {
@@ -533,9 +525,7 @@ define('ajax-html-loader', [
 					requestUrl += encodedHTTPParams;
 				}
 			}
-
-			console.log(requestUrl);
-
+			
 			return requestUrl;
 		},
 
@@ -594,8 +584,16 @@ define('ajax-html-loader', [
 						inputType = inputElement.getAttribute('type'),
 						key = inputElement.getAttribute('name');
 
-					if(inputElementName == 'INPUT' && ((inputType != "radio" && inputType != "checkbox") || inputElement.checked) && inputElement.value){
-						formValues[key] = inputElement.value;
+					if(inputElementName == 'INPUT'){
+						if(((inputType != "radio" && inputType != "checkbox") || inputElement.checked) && inputElement.value){
+							formValues[key] = inputElement.value;
+						}
+					}
+					else if (inputElementName == 'SELECT'){
+						if(inputElement.selectedIndex >= 0){
+							var selectedOption = inputElement.options[inputElement.selectedIndex];
+							formValues[key] = selectedOption.value || selectedOption.text;
+						}
 					}
 				}
 			}
