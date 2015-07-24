@@ -112,12 +112,11 @@
 					<label for="example-form-lastname">Last Name</label>
 				</div>
 				<div class="col-xs-6 col-sm-3 form-group">
-					<fieldset>
-						<input id="example-form-gender-male" type="radio" name="gender" value="male">
-						<label for="example-form-gender-male">male</label>
-						<input id="example-form-gender-female" type="radio" name="gender" value="female">
-						<label for="example-form-gender-female">female</label>
-					</fieldset>
+					<select  id="example-form-gender" name="gender">
+						<option>male</option>
+						<option>female</option>
+					</select>
+					<label for="example-form-gender">Gender</label>
 				</div>
 				<div class="col-xs-6 col-sm-3 form-group">
 					<input type="submit" value="Filter" class="mJS_ajaxLoader" data-alaction="replace" data-alinitloading="true" data-alloader="true" data-alloadertarget="#bJS_formExample form" data-alsourceselector="#bJS_formExample-source" data-altargetselector="#bJS_formExample-target">
