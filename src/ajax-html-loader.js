@@ -119,7 +119,7 @@ define('ajax-html-loader', [
 		 */
 		_initialize: function(el, opts){
 			this.el = el;
-			this.opts = mergeObjects(this.defaultOpts, this._getOptionsFromDataAttributes(), opts);
+			this.opts = mergeObjects(this.defaultOpts, this._getOptionsFromAttributes(), this._getFormBasedOptions(), opts);
 
 			this._beforeLoadingHandlers = [];
 			this._onLoadingHandlers = [];
@@ -282,11 +282,37 @@ define('ajax-html-loader', [
 		},
 
 		/**
-		 * Extracts options from the html attributes based on the attributeOptionsMapping definition above.
+		 * Extracts options from the form element if defined.
+		 *
 		 * @returns {{}}
 		 * @private
 		 */
-		_getOptionsFromDataAttributes: function(){
+		_getFormBasedOptions: function(){
+			var formBasedOptions = {},
+				clickableType = this.el.getAttribute('type');
+
+			if(clickableType && clickableType === 'submit'){
+				var formEl = this.getParentForm();
+
+				if(formEl){
+					var action = formEl.getAttribute('action'),
+						method = formEl.getAttribute('method');
+
+					if(action) formBasedOptions.ajaxSource = action;
+					if(method) formBasedOptions.httpMethod = method.toUpperCase();
+				}
+			}
+
+			return formBasedOptions;
+		},
+
+		/**
+		 * Extracts options from the html attributes based on the attributeOptionsMapping definition above.
+		 *
+		 * @returns {{}}
+		 * @private
+		 */
+		_getOptionsFromAttributes: function(){
 			var attributeOpts = {};
 
 			for(var attrOpt in this.attributeOptionsMapping){
@@ -337,7 +363,15 @@ define('ajax-html-loader', [
 		 * @returns {string}
 		 */
 		getAjaxSource: function(){
-			return this.getOption('ajaxSource') || this.el.getAttribute('href');
+			var clickableType = this.el.getAttribute('type'),
+				formAction;
+
+			if(clickableType && clickableType === 'submit'){
+				var formEl = this.getParentForm();
+				if(formEl) formAction = formEl.getAttribute('action');
+			}
+
+			return this.getOption('ajaxSource') || this.el.getAttribute('href') || formAction;
 		},
 
 		/**
@@ -375,7 +409,16 @@ define('ajax-html-loader', [
 		 * @returns {*}
 		 */
 		getHttpMethod: function(){
-			return this.getOption('httpMethod');
+			var clickableType = this.el.getAttribute('type'),
+				formMethod;
+
+			if(clickableType && clickableType === 'submit') {
+				var formEl = this.getParentForm();
+				if(formEl) formMethod = formEl.getAttribute('method');
+				if(formMethod) formMethod = formMethod.toUpperCase();
+			}
+
+			return this.getOption('httpMethod') || formMethod;
 		},
 
 		/**
@@ -453,16 +496,22 @@ define('ajax-html-loader', [
 				requestUrl = this.getAjaxSource(),
 				httpParams = this.getHttpParams();
 
+			console.log("GET REQUEST URL");
+			console.log(httpMethod);
+			console.log(httpParams);
+
 			if(httpMethod == 'GET' && httpParams && httpParams.length){
 				if(preventURLEncoding){
 					requestUrl += httpParams;
 				}
 				else {
 					var encodedHTTPParams = "",
-						paramsArray = httpParams.splice('&');
+						paramsArray = httpParams.split('&');
+
+					console.log(paramsArray);
 
 					for(var i in paramsArray){
-						var keyValueArray = paramsArray[i].splice('=');
+						var keyValueArray = paramsArray[i].split('=');
 						if(keyValueArray[0]){
 							encodedHTTPParams += encodeURIComponent(keyValueArray[0]) + '=';
 							if(keyValueArray[1]){
@@ -474,6 +523,8 @@ define('ajax-html-loader', [
 						}
 					}
 
+					console.log(encodedHTTPParams);
+
 					if(requestUrl.indexOf('?') >= 0) {
 						requestUrl += "&";
 					} else {
@@ -482,6 +533,9 @@ define('ajax-html-loader', [
 					requestUrl += encodedHTTPParams;
 				}
 			}
+
+			console.log(requestUrl);
+
 			return requestUrl;
 		},
 
