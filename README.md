@@ -94,27 +94,80 @@ the same group name are handeled together.
 		</div>
 	</section>
     	
-    	
+#### Form Example
+This module can be used to handle ajax requests for an HTML form. The following example illustrates how to achieve this.
+    
+##### Example HTML
+	<section id="bJS_formExample">
+		<h2>Form Test</h2>
+		<form action="/formdata/" method="post">
+			<div class="row">
+				<div class="col-xs-6 col-sm-3 form-group">
+					<input id="example-form-firstname" type="text" name="firstname">
+					<label for="example-form-firstname">First Name</label>
+				</div>
+				<div class="col-xs-6 col-sm-3 form-group">
+					<input id="example-form-lastname" type="text" name="lastname">
+					<label for="example-form-lastname">Last Name</label>
+				</div>
+				<div class="col-xs-6 col-sm-3 form-group">
+					<fieldset>
+						<input id="example-form-gender-male" type="radio" name="gender" value="male">
+						<label for="example-form-gender-male">male</label>
+						<input id="example-form-gender-female" type="radio" name="gender" value="female">
+						<label for="example-form-gender-female">female</label>
+					</fieldset>
+				</div>
+				<div class="col-xs-6 col-sm-3 form-group">
+					<input type="submit" value="Filter" class="mJS_ajaxLoader" data-alaction="replace" data-alinitloading="true" data-alloader="true" data-alloadertarget="#bJS_formExample form" data-alsourceselector="#bJS_formExample-source" data-altargetselector="#bJS_formExample-target">
+				</div>
+			</div>
+		</form>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Gender</th>
+				</tr>
+			</thead>
+			<tbody id="bJS_formExample-target">
+			</tbody>
+		</table>
+	</section>
+	
+##### Example JS
+	require(['ajax-html-load'], function(AjaxHTMLLoader){
+		var submitButton = document.querySelecto('.mJS_ajaxLoader'),
+			ajaxHTMLLoader = new AjaxHTMLLoader(submitButton);
+	});
+	
+The ajax-html-loader module is able to detect if the HTML element to which it is bound is a submit button of a form or not.
+If the clickable HTML element is a submit button the ajax source and the http method are taken from the action and the 
+method attribute of the parent form, if available. The action and method can be overridden by either adding the documented
+attributes data-alajaxsource and/or data-almethod to the submit button, or by passing the ajaxSource option and/or the
+httpMethod method as JSON options.
+
 
 ### Options
 
 Option name | HTML attribute | Type | Default Value | Description
 ----------- | -------------- | ---- | ------------- | -----------
 actionType | data-alaction | String | "append" | Defines if loaded content should replace the target content or should be appended to target content. Valid types are 'append' or 'replace'
-ajaxSource | data-alajaxsource or href | String or Function | "" | URL of the source that will be loaded.
+ajaxSource | data-alajaxsource or href or action of a parent form | String or Function | "" | URL of the source that will be loaded.
 sourceSelector | data-alsourceselector | String or Function | "al_source" | Selector of the element that contains the content that will be appended or will replace the target content.
 targetSelector | data-altargetselector | String or Function | "al_target" | Selector of the element that contains the content to which the new content will be appended, or the content that will be replaced.
-httpMethod | data-almethod | String or Function | "GET" | HTTP method that will be used in the ajax request. POST is tested. Others are not testet, yet.
+httpMethod | data-almethod or method of a parent form | String or Function | "GET" | HTTP method that will be used in the ajax request. POST is tested. Others are not testet, yet.
 httpParams | data-alparams | String or Function | "" | HTTP params that will be either send as GET parameters or in the request body, depending on the httpMethod.
 showLoader | data-alloader | Boolean or Function | false | Define if a loader css class should be added while loading.
 loaderClass | data-alloaderclass | String or Function | "al_loader" | Class that will be added if showLoader is true.
 loaderTargetSelector | data-alloadertarget | String or Function | "body" | Element selector to which the loaderClass will be added if showLoader is true.
 group | data-algroup | String or Function | "" | Group can be defined if multiple links should work as if they would have only one loader.
 initLoading | data-alinitloading | Boolean | false | // Defines if loading should be started automatically after initialization.
-beforeLoading | N.A. | Function/Array[Function] | undefined | One or multiple before loading callbacks.
-onLoading | N.A. | Function/Array[Function] | undefined | One or multiple on loading callbacks.
-onLoadingSuccess | N.A. | Function/Array[Function] | undefined | One or multiple on loading success callbacks.
-onLoadingError | N.A. | Function/Array[Function] | undefined | One or multiple on loading error callbacks.
+beforeLoading | N.A. | Function / Array[Function] | undefined | One or multiple before loading callbacks.
+onLoading | N.A. | Function / Array[Function] | undefined | One or multiple on loading callbacks.
+onLoadingSuccess | N.A. | Function / Array[Function] | undefined | One or multiple on loading success callbacks.
+onLoadingError | N.A. | Function / Array[Function] | undefined | One or multiple on loading error callbacks.
 
 Many of the options can be passed as functions if they are passed in JS. This won't work for options that are passed as
 HTML attribute, because we want to avoid the use of eval.
