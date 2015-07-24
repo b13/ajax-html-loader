@@ -174,6 +174,7 @@ HTML attribute, because we want to avoid the use of eval.
 If an option is passed as JS option and as HTML attribute option, the js option will always override the html attribute
 option.
 
+
 ### Public Functions
 
 Function name | Return value type | Description
