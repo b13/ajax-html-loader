@@ -525,7 +525,7 @@ define('ajax-html-loader', [
 					requestUrl += encodedHTTPParams;
 				}
 			}
-			
+
 			return requestUrl;
 		},
 
@@ -593,7 +593,7 @@ define('ajax-html-loader', [
 						inputType = inputElement.getAttribute('type'),
 						key = inputElement.getAttribute('name');
 
-					if(inputElementName == 'INPUT'){
+					if(inputElementName == 'INPUT' || inputElementName == 'TEXTAREA'){
 						if(((inputType != "radio" && inputType != "checkbox") || inputElement.checked) && inputElement.value){
 							formValues[key] = inputElement.value;
 						}
