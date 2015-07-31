@@ -168,7 +168,7 @@ beforeLoading | N.A. | Function / Array[Function] | undefined | One or multiple 
 onLoading | N.A. | Function / Array[Function] | undefined | One or multiple on loading callbacks.
 onLoadingSuccess | N.A. | Function / Array[Function] | undefined | One or multiple on loading success callbacks.
 onLoadingError | N.A. | Function / Array[Function] | undefined | One or multiple on loading error callbacks.
-
+validator | N.A. | Function | undefined | A validator function that is called before the content loading ist initialized. The loading will be initialized if the return value of the validator resolves to TRUE. 
 Many of the options can be passed as functions if they are passed in JS. This won't work for options that are passed as
 HTML attribute, because we want to avoid the use of eval.
 If an option is passed as JS option and as HTML attribute option, the js option will always override the html attribute
@@ -192,6 +192,7 @@ getTargetElements() | Array[HTMLElement] | Returns an array with HTMLElement-obj
 getRequestUrl() | String | Builds and returns the request URL that will be used to load the ajax content. The function respects the defined ajax source as well as the http method and the http params.
 getGroupName() | String | Returns the value of the group option.
 doLoadInitially() | Boolean | Returns the value of the initLoading option.
+getValidator() | Function or undefined | Returns a validator function that is called before the content loading ist initialized.
 getOptions() | Object | Returns a copy of the options object. The option provided in this object are not evaluated. That means if options are defined as functions, they will be also represented as functions and not as their evalution values.
 getOption(String: optionName, Boolean: preventEvaluation) | String/Boolean/Function | Returns an option defined by its' name. If an option is provided as function, the preventEvaluation parameter determines if the option should be returned as function or if the function should be evaluated.
 setOptions(Object: opts) | undefined | Expects an object with option keys and their values. This function will override only the provided options.
