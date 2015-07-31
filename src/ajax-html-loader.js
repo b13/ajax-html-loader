@@ -547,6 +547,15 @@ define('ajax-html-loader', [
 		},
 
 		/**
+		 * Returns a validator function that is called before the content loading ist initialized.
+		 *
+		 * @returns {function}
+		 */
+		getValidator: function(){
+			return this.getOption('validator', true);
+		},
+
+		/**
 		 * Searches in all parent elements of the clickable element for a form element and returns it, if found.
 		 *
 		 * @returns {undefined}
@@ -667,7 +676,13 @@ define('ajax-html-loader', [
 				loaderTarget = document.querySelector(loaderTargetSelector),
 				currentRequestCount = this._requestCount = this._requestCount + 1,
 				groupName = this.getGroupName(),
-				currentRequestCount;
+				currentRequestCount,
+				validator = this.getValidator();
+
+			// Check if validator is set and resolve it.
+			if(typeof validator === 'function' && !validator()){
+				return;
+			}
 
 			//Get group state if group name is defined.
 			if(groupName){
