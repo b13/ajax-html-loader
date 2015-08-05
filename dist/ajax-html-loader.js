@@ -607,6 +607,16 @@ define('ajax-html-loader', [
 				}
 			}
 
+			//Add value of the clicked submit button
+			if(this.el.getAttribute('type') == 'submit'){
+				var submitKey   = this.el.getAttribute('name'),
+					submitValue = this.el.value;
+
+				if(typeof submitValue !== 'undefined' && submitValue !== null){
+					formValues[submitKey] = submitValue;
+				}
+			}
+
 			return formValues
 		},
 
