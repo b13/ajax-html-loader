@@ -491,39 +491,20 @@ define('ajax-html-loader', [
 		 *
 		 * @returns {*|string}
 		 */
-		getRequestUrl: function(preventURLEncoding){
+		getRequestUrl: function(){
 			var httpMethod = this.getHttpMethod(),
 				requestUrl = this.getAjaxSource(),
 				httpParams = this.getHttpParams();
 
 			if(httpMethod == 'GET' && httpParams && httpParams.length){
-				if(preventURLEncoding){
-					requestUrl += httpParams;
-				}
-				else {
-					var encodedHTTPParams = "",
-						paramsArray = httpParams.split('&');
 
-					for(var i in paramsArray){
-						var keyValueArray = paramsArray[i].split('=');
-						if(keyValueArray[0]){
-							encodedHTTPParams += encodeURIComponent(keyValueArray[0]) + '=';
-							if(keyValueArray[1]){
-								encodedHTTPParams += encodeURIComponent(keyValueArray[1]);
-							}
-							if(i < paramsArray.length - 1){
-								encodedHTTPParams += '&'
-							}
-						}
-					}
-
-					if(requestUrl.indexOf('?') >= 0) {
-						requestUrl += "&";
-					} else {
-						requestUrl += "?";
-					}
-					requestUrl += encodedHTTPParams;
+				if(requestUrl.indexOf('?') >= 0) {
+					requestUrl += "&";
+				} else {
+					requestUrl += "?";
 				}
+				requestUrl += httpParams;
+
 			}
 
 			return requestUrl;
@@ -595,13 +576,13 @@ define('ajax-html-loader', [
 
 					if(inputElementName == 'INPUT' || inputElementName == 'TEXTAREA'){
 						if(((inputType != "radio" && inputType != "checkbox") || inputElement.checked) && inputElement.value){
-							formValues[key] = inputElement.value;
+							formValues[key] = encodeURIComponent(inputElement.value);
 						}
 					}
 					else if (inputElementName == 'SELECT'){
 						if(inputElement.selectedIndex >= 0){
 							var selectedOption = inputElement.options[inputElement.selectedIndex];
-							formValues[key] = selectedOption.value || selectedOption.text;
+							formValues[key] = encodeURIComponent(selectedOption.value || selectedOption.text);
 						}
 					}
 				}
