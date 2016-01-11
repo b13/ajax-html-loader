@@ -1,4 +1,4 @@
-# Ajax HTML Loader
+# Ajax HTML Loader v0.1.3
 AMD  module to handle dynamic asynchronous html content loading.
 
 ## Introduction
@@ -155,6 +155,7 @@ Option name | HTML attribute | Type | Default Value | Description
 ----------- | -------------- | ---- | ------------- | -----------
 actionType | data-alaction | String | "append" | Defines if loaded content should replace the target content or should be appended to target content. Valid types are 'append' or 'replace'
 ajaxSource | data-alajaxsource or href or action of a parent form | String or Function | "" | URL of the source that will be loaded.
+contentType | data-alcontenttype or enctype of a parent form | String | "application/x-www-form-urlencoded" | Content type of the request, corresponds also to the enctype of the form.
 sourceSelector | data-alsourceselector | String or Function | "al_source" | Selector of the element that contains the content that will be appended or will replace the target content.
 targetSelector | data-altargetselector | String or Function | "al_target" | Selector of the element that contains the content to which the new content will be appended, or the content that will be replaced.
 httpMethod | data-almethod or method of a parent form | String or Function | "GET" | HTTP method that will be used in the ajax request. POST is tested. Others are not testet, yet.
@@ -175,12 +176,20 @@ If an option is passed as JS option and as HTML attribute option, the js option 
 option.
 
 
+### Constants
+
+Constant Name | Value
+AjaxHTMLLoader.CONTENT_TYPE_PLAIN | "text/plain"
+AjaxHTMLLoader.CONTENT_TYPE_URL_ENCODED | "application/x-www-form-urlencoded"
+AjaxHTMLLoader.CONTENT_TYPE_FORM_DATA | "multipart/form-data"
+
 ### Public Functions
 
 Function name | Return value type | Description
 ------------- | ----------------- | -----------
 getAjaxSource() | String | Returns the value of the ajaxSource option or the href attribute.
 getActionType() | String | Returns the value of the actionType option.
+getContentType() | String | Returns the content type that is used in the request header.
 getSourceSelector() | String | Returns the value of the sourceSelector option.
 getTargetSelector() | String | Returns the value of the targetSelector option.
 getHttpMethod() | String | Returns the value of the httpMethod option.
@@ -190,6 +199,7 @@ getLoaderClass() | String | Returns the value of the loaderClass option.
 getLoaderTargetSelector() | String | Returns the value of the loaderTargetSelector option.
 getTargetElements() | Array[HTMLElement] | Returns an array with HTMLElement-objects that match the targetSelector.
 getRequestUrl() | String | Builds and returns the request URL that will be used to load the ajax content. The function respects the defined ajax source as well as the http method and the http params.
+getRequestData() | String | Returns the data that will be send as request payload.
 getGroupName() | String | Returns the value of the group option.
 doLoadInitially() | Boolean | Returns the value of the initLoading option.
 getValidator() | Function or undefined | Returns a validator function that is called before the content loading ist initialized.

@@ -2,7 +2,7 @@ config = {
 	testCodeDirectory: __dirname + '/test/',
 	testServerPath: 'test/server/server.coffee',
 	testServerPort: 7777
-}
+};
 
 module.exports = function (grunt) {
 
@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 		'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> @ <%= pkg.company.name%>' +
 		' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
 		// Task configuration.
-
+ 
 		clean: {
 			build: ['dist/*'],
 			dev :  ['test/dist/js/contrib/ajax-html-loader.js'],
